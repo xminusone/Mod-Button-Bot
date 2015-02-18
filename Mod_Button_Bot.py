@@ -67,7 +67,7 @@ class Bot(object):
             
             self.cache.append(comment.id)
            
-            print("processing comment "+comment.id)
+            print("processing comment "+comment.id+" by /u/"+comment.author.name)
 
             #enclose all mod actions in a big Try to protect against insufficient permissions
             try:
@@ -78,7 +78,7 @@ class Bot(object):
                     
                     parent_comment.remove()
                     comment.subreddit.add_ban(parent_comment.author)
-                    self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "ban", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "ban", comment.permalink)
 
                 if comment.body == "!unban":
                     parent_comment = r.get_info(thing_id=comment.parent_id)
@@ -86,7 +86,7 @@ class Bot(object):
                     acted_this_cycle=True
                     
                     comment.subreddit.remove_ban(parent_comment.author)
-                    self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "unban", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "unban", comment.permalink)
 
                 if "!flair" in comment.body:
                     parent_comment = r.get_info(thing_id=comment.parent_id)
@@ -97,7 +97,7 @@ class Bot(object):
                     fclass = re.search("!flair( class=(\w+))? (.+)",comment.body).group(2)
                     ftext = re.search("!flair( class=(\w+))? (.+)",comment.body).group(3)
                     r.set_flair(comment.subreddit,parent_comment.author.name,flair_text=ftext,flair_css_class=fclass)
-                    self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "flair: "+str(ftext)+"/"+str(fclass), comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "flair: "+str(ftext)+"/"+str(fclass), comment.permalink)
 
                 if comment.body == "!approve":
                     parent_comment = r.get_info(thing_id=comment.parent_id)
@@ -105,7 +105,7 @@ class Bot(object):
                     acted_this_cycle=True
                     
                     comment.subreddit.add_contributor(parent_comment.author)
-                    self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "approve", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "approve", comment.permalink)
 
                 if comment.body == "!unapprove":
                     parent_comment = r.get_info(thing_id=comment.parent_id)
@@ -113,7 +113,7 @@ class Bot(object):
                     acted_this_cycle=True
                     
                     comment.subreddit.remove_contributor(parent_comment.author)
-                    self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "unapprove", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "unapprove", comment.permalink)
                     
             except praw.errors.ModeratorOrScopeRequired:
                 r.send_message(comment.author, "Error", comment.permalink+"\n\n"+permissions_fail)
@@ -153,14 +153,21 @@ class Bot(object):
             except:
                 pass
             
-    def log_entry(self, subname, modditor, redditor, action, url):
-        #Post log entry to /r/mod_button_bot_log. Avoid duplicate submissions
-        title = "[/r/"+subname+"] ["+action+"] /u/"+modditor.name+" --> /u/"+redditor.name
-        print(title)
+    def log_entry(self, subreddit, modditor, redditor, action, url):
+        #Post log entry to wiki. Avoid duplicate submissions
+        entry = time.strftime("%c",time.gmtime())+" - /u/"+modditor.name+" "+action.upper()"+ --> /u/"+redditor.name
+        print(entry+"in /r/"+subreddit.display_name)
         try:
-            r.get_subreddit(logging_subreddit).submit(title,url=url+"&context=3")
-        except praw.errors.AlreadySubmitted:
-            pass
+            wikipage = r.get_wiki_page(subreddit, "Mod_Button_Bot_Log").content_md
+        except:
+            wikipage = ''
+        
+        wikipage = "* "+entry + "\n\n"+ wikipage
+        
+        try:
+            r.edit_wiki_page(subreddit, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
+        except praw.errors.ModeratorOrScopeRequired:
+            r.send_message(subreddit, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry
 
 modbot = Bot()
 
