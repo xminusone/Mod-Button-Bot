@@ -8,7 +8,7 @@ r=praw.Reddit(user_agent="Toolbox Button Bot alpha /u/captainmeta4")
 
 #set globals
 username = "Mod_Button_Bot"
-password = "xxxx"
+password = input("password: ")
 
 permissions_fail = "I wasn't able to complete the requested action. I do not have the necessary moderator permissions."
 
