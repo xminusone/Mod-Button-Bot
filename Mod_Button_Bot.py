@@ -68,13 +68,14 @@ class Bot(object):
             self.cache.append(comment.id)
            
             print("processing comment "+comment.id)
-            acted_this_cycle=True
 
             #enclose all mod actions in a big Try to protect against insufficient permissions
             try:
                 if comment.body == "!ban":
                     parent_comment = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
+                    acted_this_cycle=True
+                    
                     parent_comment.remove()
                     comment.subreddit.add_ban(parent_comment.author)
                     self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "ban", comment.permalink)
@@ -82,12 +83,16 @@ class Bot(object):
                 if comment.body == "!unban":
                     parent_comment = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
+                    acted_this_cycle=True
+                    
                     comment.subreddit.remove_ban(parent_comment.author)
                     self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "unban", comment.permalink)
 
                 if "!flair" in comment.body:
                     parent_comment = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
+                    acted_this_cycle=True
+                    
                     #extract flair params
                     fclass = re.search("!flair( class=(\w+))? (.+)",comment.body).group(2)
                     ftext = re.search("!flair( class=(\w+))? (.+)",comment.body).group(3)
@@ -97,12 +102,16 @@ class Bot(object):
                 if comment.body == "!approve":
                     parent_comment = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
+                    acted_this_cycle=True
+                    
                     comment.subreddit.add_contributor(parent_comment.author)
                     self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "approve", comment.permalink)
 
                 if comment.body == "!unapprove":
                     parent_comment = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
+                    acted_this_cycle=True
+                    
                     comment.subreddit.remove_contributor(parent_comment.author)
                     self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "unapprove", comment.permalink)
                     
