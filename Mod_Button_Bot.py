@@ -155,7 +155,7 @@ class Bot(object):
             
     def log_entry(self, subreddit, modditor, redditor, action, url):
         #Post log entry to wiki. Avoid duplicate submissions
-        entry = time.strftime("%c",time.gmtime())+" - /u/"+modditor.name+" "+action.upper()"+ --> /u/"+redditor.name
+        entry = time.strftime("%c",time.gmtime())+" - /u/"+modditor.name+" "+action.upper()+" --> /u/"+redditor.name
         print(entry+"in /r/"+subreddit.display_name)
         try:
             wikipage = r.get_wiki_page(subreddit, "Mod_Button_Bot_Log").content_md
