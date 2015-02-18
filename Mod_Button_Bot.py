@@ -87,7 +87,7 @@ class Bot(object):
 
                 if "!flair" in comment.body:
                     parent_comment = r.get_info(thing_id=comment.parent_id)
-
+                    comment.remove()
                     #extract flair params
                     fclass = re.search("!flair( class=(\w+))? (.+)",comment.body).group(2)
                     ftext = re.search("!flair( class=(\w+))? (.+)",comment.body).group(3)
