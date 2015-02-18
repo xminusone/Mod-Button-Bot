@@ -91,7 +91,7 @@ class Bot(object):
                     #extract flair params
                     fclass = re.search("!flair( class=(\w+))? (.+)",comment.body).group(2)
                     ftext = re.search("!flair( class=(\w+))? (.+)",comment.body).group(3)
-                    r.set_flair("mod_button_bot_log","captainmeta4",flair_text=ftext,flair_css_class=fclass)
+                    r.set_flair(comment.subreddit,parent_comment.author.name,flair_text=ftext,flair_css_class=fclass)
                     self.log_entry(comment.subreddit.display_name, comment.author, parent_comment.author, "flair: "+str(ftext)+"/"+str(fclass), comment.permalink)
 
                 if comment.body == "!approve":
