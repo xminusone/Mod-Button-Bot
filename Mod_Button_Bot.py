@@ -2,13 +2,14 @@ import praw
 import time
 from collections import deque
 import re
+import os
 
 #initialize reddit
 r=praw.Reddit(user_agent="Toolbox Button Bot alpha /u/captainmeta4")
 
 #set globals
 username = "Mod_Button_Bot"
-password = input("password: ")
+password = os.environ.get('password')
 
 permissions_fail = "I wasn't able to complete the requested action. I do not have the necessary moderator permissions."
 
