@@ -11,6 +11,8 @@ r=praw.Reddit(user_agent="Toolbox Button Bot alpha /u/captainmeta4")
 username = "Mod_Button_Bot"
 password = os.environ.get('password')
 
+logging_subreddit="Mod_Button_Bot_Log"
+
 permissions_fail = "I wasn't able to complete the requested action. I do not have the necessary moderator permissions."
 
 
