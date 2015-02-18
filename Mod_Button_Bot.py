@@ -22,7 +22,7 @@ class Bot(object):
     def load_caches(self):
         #load already-processed comments cache and modlist cache
         try:
-            self.cache = eval(r.get_wiki_page("mod_button_bot_log","comment_cache").content_md)
+            self.cache = eval(r.get_wiki_page(logging_subreddit,"comment_cache").content_md)
             print("comment cache loaded")
             
         except:
@@ -30,7 +30,7 @@ class Bot(object):
             self.cache = deque([],maxlen=1000)
 
         try:
-            self.modlist = eval(r.get_wiki_page("mod_button_bot_log","modlist_cache").content_md)
+            self.modlist = eval(r.get_wiki_page(logging_subreddit,"modlist_cache").content_md)
             print("modlist cache loaded")
         except:
             print("modlist cache not loaded. Reloading all moderator lists")
@@ -66,10 +66,9 @@ class Bot(object):
                 continue
             
             self.cache.append(comment.id)
-
            
-            
             print("processing comment "+comment.id)
+            acted_this_cycle=True
 
             #enclose all mod actions in a big Try to protect against insufficient permissions
             try:
@@ -110,7 +109,8 @@ class Bot(object):
             except praw.errors.ModeratorOrScopeRequired:
                 r.send_message(comment.author, "Error", comment.permalink+"\n\n"+permissions_fail)
 
-        r.edit_wiki_page("mod_button_bot_log","comment_cache",str(self.cache))
+        if acted_this_cycle:
+            r.edit_wiki_page("mod_button_bot_log","comment_cache",str(self.cache))
 
                     
     def update_moderators(self):
@@ -161,8 +161,11 @@ modbot.load_caches()
 
 while 1:
     print("running cycle")
+    
+    #Once an hour, update mod list
     if time.localtime().tm_min==0 and time.localtime().tm_sec<29:
         modbot.update_moderators()
+    
     modbot.check_messages()
     modbot.do_comments()
     print("sleeping..")
