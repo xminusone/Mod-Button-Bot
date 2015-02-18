@@ -32,3 +32,7 @@ Adds the user as an approved contributor to the subreddit.
 ##!unapprove
 
 Removes the user from the approved contributor list.
+
+#Logging
+
+To ensure that /u/Mod\_Button_bot is not abused to anonymously moderate, all actions are logged at http://reddit.com/r/Mod_Button_Bot_Log
