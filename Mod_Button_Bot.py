@@ -143,7 +143,16 @@ class Bot(object):
             try:
                 r.accept_moderator_invite(message.subreddit.display_name)
                 print("Accepted moderator invite for /r/"+message.subreddit.display_name)
-                self.update_moderators_in_subreddit(message.subreddit)            
+                self.update_moderators_in_subreddit(message.subreddit)       
+                
+                #send greeting
+                msg="Hello, moderators of /r/"+message.subreddit.display_name+"!\n\n"
+                msg=msg+"I am a bot designed to assist moderators using tablets, mobile devices, or any other reddit interface that does not support/permit extensions. Full details of my functionality may be found on [Github](http://github.com/captainmeta4/mod-button-bot).\n\n"
+                msg=msg+"Please ensure that I have access, flair, posts, and wiki permissions for full functionality.\n\n"
+                msg=msg+"I will log my actions at /r/"+message.subreddit.display_name+"/wiki/Mod_Button_Bot_Log. For the sake of accountability, if I am unable to log an action, I will send you a modmail instead.\n\n"
+                msg=msg+"Feedback may be directed to my creator, /u/captainmeta4. Thanks for using me!"
+                r.send_message(message.subreddit,"Hello!",msg)
+                
             except:
                 pass
             
