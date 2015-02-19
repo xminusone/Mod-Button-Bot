@@ -144,6 +144,8 @@ class Bot(object):
                 r.accept_moderator_invite(message.subreddit.display_name)
                 print("Accepted moderator invite for /r/"+message.subreddit.display_name)
                 self.update_moderators_in_subreddit(message.subreddit)       
+                #update cache
+                r.edit_wiki_page("mod_button_bot_log","modlist_cache",str(self.modlist))  
                 
                 #send greeting
                 msg="Hello, moderators of /r/"+message.subreddit.display_name+"!\n\n"
@@ -153,6 +155,14 @@ class Bot(object):
                 msg=msg+"Feedback may be directed to my creator, /u/captainmeta4. Thanks for using me!"
                 r.send_message(message.subreddit,"Hello!",msg)
                 
+
+                
+            except:
+                pass
+            
+            try:
+                if message.author.name=="captainmeta4" and "reload mods" in message.body:
+                    self.update_moderators()
             except:
                 pass
             
