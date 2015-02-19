@@ -182,7 +182,7 @@ class Bot(object):
         except:
             wikipage = ''
         
-        wikipage = "* "+entry + "\n\n"+ wikipage
+        wikipage = "* "+entry + "\n"+ wikipage
         
         try:
             r.edit_wiki_page(subreddit, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
