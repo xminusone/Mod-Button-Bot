@@ -1,7 +1,7 @@
 # Mod-Button-Bot
 A bot that replicates some of the functionality of Toolbox's mod button for moderators on mobile.
 
-To add this to your subreddit, add /u/Mod_Button_Bot as a moderator with at least access, flair, and posts permissions.
+To add this to your subreddit, add /u/Mod_Button_Bot as a moderator with at least access, flair, posts, and wiki permissions.
 
 Note - There is no PRAW method for determining if a moderator has a given moderator permission. Thus, this bot can't check for that, and so use of this bot will effectively give access, flair, and posts permissions to all moderators.
 
@@ -35,4 +35,4 @@ Removes the user from the approved contributor list.
 
 #Logging
 
-To ensure that /u/Mod\_Button_bot is not abused to anonymously moderate, all actions are logged at http://reddit.com/r/Mod_Button_Bot_Log
+To ensure that /u/Mod\_Button\_bot is not abused to anonymously moderate, all actions are logged at /r/subredditname/wiki/Mod\_Button\_Bot\_Log.
