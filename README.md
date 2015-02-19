@@ -25,13 +25,17 @@ Sets user flair. Can be done as `!flair text goes here` or `!flair class=cssclas
 
 Both set the flair text to "text goes here"; the second example also sets the flair class to "cssclass"
 
-##!approve
+##!contrib
 
 Adds the user as an approved contributor to the subreddit.
 
-##!unapprove
+##!decontrib
 
 Removes the user from the approved contributor list.
+
+##!spam
+
+Removes the content as spam, and submits a /r/spam report.
 
 #Logging
 
