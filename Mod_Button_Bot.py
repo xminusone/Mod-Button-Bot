@@ -60,6 +60,8 @@ class Bot(object):
                 continue
             
             self.cache.append(comment.id)
+            
+            acted_this_cycle=True
            
             print("processing comment "+comment.id+" by /u/"+comment.author.name)
 
@@ -68,7 +70,6 @@ class Bot(object):
                 if comment.body == "!ban":
                     parent_comment = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
-                    acted_this_cycle=True
                     
                     parent_comment.remove()
                     comment.subreddit.add_ban(parent_comment.author)
@@ -77,37 +78,41 @@ class Bot(object):
                 if comment.body == "!unban":
                     parent_comment = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
-                    acted_this_cycle=True
                     
                     comment.subreddit.remove_ban(parent_comment.author)
                     self.log_entry(comment.subreddit, comment.author, parent_comment.author, "unban", comment.permalink)
 
                 if "!flair" in comment.body:
-                    parent_comment = r.get_info(thing_id=comment.parent_id)
+                    parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     acted_this_cycle=True
                     
                     #extract flair params
                     fclass = re.search("!flair( class=(\w+))? (.+)",comment.body).group(2)
                     ftext = re.search("!flair( class=(\w+))? (.+)",comment.body).group(3)
-                    r.set_flair(comment.subreddit,parent_comment.author.name,flair_text=ftext,flair_css_class=fclass)
-                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "flair: "+str(ftext)+"/"+str(fclass), comment.permalink)
+                    r.set_flair(comment.subreddit,parent.author.name,flair_text=ftext,flair_css_class=fclass)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "flair: "+str(ftext)+"/"+str(fclass), comment.permalink)
 
-                if comment.body == "!approve":
-                    parent_comment = r.get_info(thing_id=comment.parent_id)
+                if comment.body == "!contrib":
+                    parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
-                    acted_this_cycle=True
                     
-                    comment.subreddit.add_contributor(parent_comment.author)
-                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "approve", comment.permalink)
+                    comment.subreddit.add_contributor(parent.author)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "approve", comment.permalink)
 
-                if comment.body == "!unapprove":
-                    parent_comment = r.get_info(thing_id=comment.parent_id)
+                if comment.body == "!decontrib":
+                    parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
-                    acted_this_cycle=True
                     
-                    comment.subreddit.remove_contributor(parent_comment.author)
-                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "unapprove", comment.permalink)
+                    comment.subreddit.remove_contributor(parent.author)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "unapprove", comment.permalink)
+                
+                if comment.body =="!spam"
+                    parent = r.get_info(thing_id=comment.parent_id)
+                    comment.remove()
+                    
+                    parent.remove(spam=True)
+                    r.submit("spam","overview for "+parent.author.name,url="http://reddit.com/user/"+parent.author.name)
                     
             except praw.errors.ModeratorOrScopeRequired:
                 r.send_message(comment.author, "Error", comment.permalink+"\n\n"+permissions_fail)
@@ -169,6 +174,7 @@ class Bot(object):
     def log_entry(self, subreddit, modditor, redditor, action, url):
         #Post log entry to wiki. Avoid duplicate submissions
         entry = time.strftime("%c",time.gmtime())+" - /u/"+modditor.name+" "+action.upper()+" --> /u/"+redditor.name
+        entry = "["+entry+"]("+url+"&context=3)"
         print(entry+" in /r/"+subreddit.display_name)
         try:
             wikipage = r.get_wiki_page(subreddit, "Mod_Button_Bot_Log").content_md
