@@ -113,6 +113,7 @@ class Bot(object):
                     
                     parent.remove(spam=True)
                     r.submit("spam","overview for "+parent.author.name,url="http://reddit.com/user/"+parent.author.name)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "spam", comment.permalink)
                     
             except praw.errors.ModeratorOrScopeRequired:
                 r.send_message(comment.author, "Error", comment.permalink+"\n\n"+permissions_fail)
@@ -172,7 +173,7 @@ class Bot(object):
                 pass
             
     def log_entry(self, subreddit, modditor, redditor, action, url):
-        #Post log entry to wiki. Avoid duplicate submissions
+        #Post log entry to wiki
         entry = time.strftime("%c",time.gmtime())+" - /u/"+modditor.name+" "+action.upper()+" --> /u/"+redditor.name
         entry = "["+entry+"]("+url+"&context=3)"
         print(entry+" in /r/"+subreddit.display_name)
