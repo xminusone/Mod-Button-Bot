@@ -107,13 +107,35 @@ class Bot(object):
                     comment.subreddit.remove_contributor(parent.author)
                     self.log_entry(comment.subreddit, comment.author, parent.author, "unapprove", comment.permalink)
                 
-                if comment.body =="!spam":
+                if comment.body == "!spam":
                     parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     
                     parent.remove(spam=True)
                     r.submit("spam","overview for "+parent.author.name,url="http://reddit.com/user/"+parent.author.name)
                     self.log_entry(comment.subreddit, comment.author, parent.author, "spam", comment.permalink)
+                    
+                if comment.body == "!remove":
+                    parent = r.get_info(thing_id=comment.parent_id)
+                    comment.remove()
+                    
+                    parent.remove()
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "remove", comment.permalink)
+                    
+                if comment.body == "!approve":
+                    parent = r.get_info(thing_id=comment.parent_id)
+                    comment.remove()
+                    
+                    parent.approve()
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "remove", comment.permalink)
+                    
+                if "!report" in comment.body:
+                    parent = r.get_info(thing_id=comment.parent_id)
+                    comment.remove()
+                    
+                    #extract reason, if any
+                    reason = re.search("!report ?(.*)",comment.body).group(1)
+                    parent.report(reason=comment.author.name+" - "+reason)
                     
             except praw.errors.ModeratorOrScopeRequired:
                 r.send_message(comment.author, "Error", comment.permalink+"\n\n"+permissions_fail)
