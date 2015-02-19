@@ -13,31 +13,17 @@ The bot refreshes its internal cache of moderators every hour at :00 , so if you
 
 All functions automatically remove the moderator's command comment.
 
-##!ban
-
-Bans the user and removes the comment.
-
-##!unban
-
-Unbans the user.
-
-##!flair
-
-Sets user flair. Can be done as `!flair text goes here` or `!flair class=cssclass text goes here`.
-
-Both set the flair text to "text goes here"; the second example also sets the flair class to "cssclass"
-
-##!contrib
-
-Adds the user as an approved contributor to the subreddit.
-
-##!decontrib
-
-Removes the user from the approved contributor list.
-
-##!spam
-
-Removes the content as spam, and submits a /r/spam report.
+Command|Action
+-------|--------
+!ban|Bans the user and removes the comment.
+!unban|Unbans the user.
+!flair|Sets user flair. Can be done as `!flair text goes here` or `!flair class=cssclass text goes here`. Both set the flair text to "text goes here"; the second example also sets the flair class to "cssclass"
+!contrib|Adds the user as an approved contributor to the subreddit.
+!decontrib|Removes the user from the approved contributor list.
+!spam|Removes the content as spam, and submits a /r/spam report.
+!remove|Removes the content.
+!approve|Approves the content
+!report|Reports the content. Your name will be included in the report reason, along with any text following "!report" For example, "!report is this spam?" will produce a Moderator Report by the bot, with "yourname - is this spam?" as the report reason.
 
 #Logging
 
