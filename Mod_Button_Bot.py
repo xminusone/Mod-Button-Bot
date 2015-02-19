@@ -107,7 +107,7 @@ class Bot(object):
                     comment.subreddit.remove_contributor(parent.author)
                     self.log_entry(comment.subreddit, comment.author, parent.author, "unapprove", comment.permalink)
                 
-                if comment.body =="!spam"
+                if comment.body =="!spam":
                     parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     
