@@ -1,13 +1,15 @@
 # Mod-Button-Bot
 A bot that replicates some of the functionality of Toolbox's mod button for moderators on mobile.
 
-To add this to your subreddit, add /u/Mod_Button_Bot as a moderator with at least access, flair, posts, and wiki permissions.
+To add this to your subreddit, add /u/Mod_Button_Bot as a moderator with at least access, flair, posts, and wiki permissions. The moderator invitation will be automatically accepted.
 
 Note - There is no PRAW method for determining if a moderator has a given moderator permission. Thus, this bot can't check for that, and so use of this bot will effectively give access, flair, and posts permissions to all moderators.
 
 #Commands
 
 Commands are issued by being a moderator and making a comment in your subreddit.
+
+The bot refreshes its internal cache of moderators every hour at :00 , so if you add or remove mods, the bot will automaticlly adjust its behavior accordingly.
 
 All functions automatically remove the moderator's command comment.
 
