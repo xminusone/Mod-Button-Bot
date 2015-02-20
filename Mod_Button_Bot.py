@@ -13,8 +13,6 @@ password = os.environ.get('password')
 
 caching_subreddit="Mod_Button_Bot_Log"
 
-permissions_fail = "I wasn't able to complete the requested action. I do not have the necessary moderator permissions."
-
 
 
 class Bot(object):
@@ -138,7 +136,9 @@ class Bot(object):
                     parent.report(reason=comment.author.name+" - "+reason)
                     
             except praw.errors.ModeratorOrScopeRequired:
-                r.send_message(comment.author, "Error", comment.permalink+"\n\n"+permissions_fail)
+                msg=comment.permalink+"&context=3\n\nI do not have the all of the necessary permissions to execute the above command."
+                msg=msg+"\n\nI need access, flair, posts, and wiki permissions for full functionality."
+                r.send_message(comment.subreddit, "Error", msg)
 
         if acted_this_cycle:
             r.edit_wiki_page("mod_button_bot_log","comment_cache",str(self.cache))
@@ -214,26 +214,27 @@ class Bot(object):
         except praw.errors.ModeratorOrScopeRequired:
             r.send_message(subreddit, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
 
-
-modbot = Bot()
-
-modbot.login_bot()
-
-modbot.load_caches()
-
-while 1:
-    print("running cycle")
+#Master bot process
+if __name__='__main__':    
+    modbot = Bot()
     
-    #Once an hour, update mod list
-    if time.localtime().tm_min==0 and time.localtime().tm_sec<29:
-        modbot.update_moderators()
+    modbot.login_bot()
     
-    modbot.check_messages()
-    modbot.do_comments()
-    print("sleeping..")
-
-    #Run cycle on XX:XX:00 and XX:XX:30
-    time.sleep(1)
-    while time.localtime().tm_sec != 0 and time.localtime().tm_sec != 30:
+    modbot.load_caches()
+    
+    while 1:
+        print("running cycle")
+        
+        #Once an hour, update mod list
+        if time.localtime().tm_min==0 and time.localtime().tm_sec<29:
+            modbot.update_moderators()
+        
+        modbot.check_messages()
+        modbot.do_comments()
+        print("sleeping..")
+    
+        #Run cycle on XX:XX:00 and XX:XX:30
         time.sleep(1)
-
+        while time.localtime().tm_sec != 0 and time.localtime().tm_sec != 30:
+            time.sleep(1)
+    
