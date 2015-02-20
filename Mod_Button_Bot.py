@@ -223,7 +223,7 @@ class Bot(object):
             r.send_message(subreddit, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
 
 #Master bot process
-if __name__='__main__':    
+if __name__=='__main__':    
     modbot = Bot()
     
     modbot.login_bot()
