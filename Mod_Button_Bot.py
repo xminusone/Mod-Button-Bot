@@ -3,6 +3,7 @@ import time
 from collections import deque
 import re
 import os
+from retrying import retry
 
 #initialize reddit
 r=praw.Reddit(user_agent="Toolbox Button Bot alpha /u/captainmeta4")
@@ -16,9 +17,12 @@ caching_subreddit="Mod_Button_Bot_Log"
 
 
 class Bot(object):
-
+    
+    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
     def load_caches(self):
         #load already-processed comments cache and modlist cache
+        print("loading caches")
+        
         try:
             self.cache = eval(r.get_wiki_page(caching_subreddit,"comment_cache").content_md)
             print("comment cache loaded")
@@ -34,13 +38,15 @@ class Bot(object):
             print("modlist cache not loaded. Reloading all moderator lists")
             self.modlist = {}
             self.update_moderators()
-
+    
+    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
     def login_bot(self):
 
         print("logging in...")
         r.login(username, password)
         print("success")
-
+    
+    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
     def do_comments(self):
 
         print("processing comments")
@@ -143,7 +149,7 @@ class Bot(object):
         if acted_this_cycle:
             r.edit_wiki_page("mod_button_bot_log","comment_cache",str(self.cache))
 
-                    
+    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)  
     def update_moderators(self):
 
         print("Updating all moderators")
@@ -152,7 +158,8 @@ class Bot(object):
             self.update_moderators_in_subreddit(subreddit)
 
         r.edit_wiki_page("mod_button_bot_log","modlist_cache",str(self.modlist))
-
+    
+    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
     def update_moderators_in_subreddit(self, subreddit):
 
         mods=[]
@@ -161,7 +168,8 @@ class Bot(object):
                 mods.append(user.name)
         self.modlist[subreddit.display_name]=mods
         print("moderators loaded for /r/"+subreddit.display_name)
-            
+    
+    @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)        
     def check_messages(self):
 
         for message in r.get_unread(limit=None):
