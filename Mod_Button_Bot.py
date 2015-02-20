@@ -112,7 +112,7 @@ class Bot(object):
                     comment.remove()
                     
                     parent.remove(spam=True)
-                    r.submit("spam","overview for "+parent.author.name,url="http://reddit.com/user/"+parent.author.name)
+                    r.submit("spam","overview for "+parent.author.name,url="http://reddit.com/user/"+parent.author.name, resubmit=True)
                     self.log_entry(comment.subreddit, comment.author, parent.author, "spam", comment.permalink)
                     
                 if comment.body == "!remove":
