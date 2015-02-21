@@ -148,7 +148,7 @@ class Bot(object):
                     
                     rule = re.search("!report ?(\d{1,2})?",comment.body).group(1)
                     
-                    if rule='':
+                    if rule=='':
                         msg+"\n\nPlease see the [sidebar](/r/"+comment.subreddit.display_name+"/about/sidebar) for acceptable posting guidelines."
                     else
                         msg+"\n\nPlease see Rule "+rule+" in the [sidebar](/r/"+comment.subreddit.display_name+"/about/sidebar)."
