@@ -146,7 +146,7 @@ class Bot(object):
                     comment.remove()
                     parent.remove()
                     
-                    rule = re.search("!report ?(\d{1,2})?",comment.body).group(1)
+                    rule = re.search("!rule ?(\d{1,2})?",comment.body).group(1)
                     
                     if rule=='':
                         msg="\n\nPlease see the [sidebar](/r/"+comment.subreddit.display_name+"/about/sidebar) for acceptable posting guidelines."
