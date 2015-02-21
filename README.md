@@ -24,6 +24,7 @@ Command|Action
 !remove|Removes the content.
 !approve|Approves the content
 !report|Reports the content. Your name will be included in the report reason, along with any text following "!report" For example, "!report is this spam?" will produce a Moderator Report by the bot, with "yourname - is this spam?" as the report reason.
+!rule|Removes the content, and leaves a comment directing the user to the sidebar. A number may be added, to indicate a specific rule, for example, `!rule 5`.
 
 #Logging
 
