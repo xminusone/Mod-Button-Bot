@@ -156,10 +156,10 @@ class Bot(object):
                     msg=msg+"/n/nPlease [message the subreddit moderators](http://www.reddit.com/message/compose?to=%2Fr%2F"+comment.subreddit.display_name+") if you have any questions or concerns."
                     msg=msg+"/n/n*[I am a bot](https://github.com/captainmeta4/Mod-Button-Bot), but this message was generated at the instruction of a human moderator.*"
                     
-                    if isinstance(parent, praw.objects.Submission):
+                    if parent.fullname.startswith('t3_'):
                         msg = "Your submission has been removed from /r/"+comment.subreddit.display_name+"."+msg
                         parent.add_comment(msg).distinguish()
-                    elif isinstance(parent,praw.objects.Comment):
+                    elif parent.fullname.startswith('t1_'):
                         msg = "Your comment has been removed from /r/"+comment.subreddit.display_name+"."+msg
                         parent.reply(msg).distinguish()
                     
