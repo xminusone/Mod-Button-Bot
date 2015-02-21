@@ -72,19 +72,19 @@ class Bot(object):
             #enclose all mod actions in a big Try to protect against insufficient permissions
             try:
                 if comment.body == "!ban":
-                    parent_comment = r.get_info(thing_id=comment.parent_id)
+                    parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     
-                    parent_comment.remove()
+                    parent.remove()
                     comment.subreddit.add_ban(parent_comment.author)
-                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "ban", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "ban", parent.permalink)
 
                 if comment.body == "!unban":
-                    parent_comment = r.get_info(thing_id=comment.parent_id)
+                    parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     
-                    comment.subreddit.remove_ban(parent_comment.author)
-                    self.log_entry(comment.subreddit, comment.author, parent_comment.author, "unban", comment.permalink)
+                    comment.subreddit.remove_ban(parent.author)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "unban", parent.permalink)
 
                 if "!flair" in comment.body:
                     parent = r.get_info(thing_id=comment.parent_id)
@@ -95,21 +95,21 @@ class Bot(object):
                     fclass = re.search("!flair( class=(\w+))? (.+)",comment.body).group(2)
                     ftext = re.search("!flair( class=(\w+))? (.+)",comment.body).group(3)
                     r.set_flair(comment.subreddit,parent.author.name,flair_text=ftext,flair_css_class=fclass)
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "flair: "+str(ftext)+"/"+str(fclass), comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "flair: "+str(ftext)+"/"+str(fclass), parent.permalink)
 
                 if comment.body == "!contrib":
                     parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     
                     comment.subreddit.add_contributor(parent.author)
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "approve", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "approve", parent.permalink)
 
                 if comment.body == "!decontrib":
                     parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     
                     comment.subreddit.remove_contributor(parent.author)
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "unapprove", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "unapprove", parent.permalink)
                 
                 if comment.body == "!spam":
                     parent = r.get_info(thing_id=comment.parent_id)
@@ -117,21 +117,21 @@ class Bot(object):
                     
                     parent.remove(spam=True)
                     r.submit("spam","overview for "+parent.author.name,url="http://reddit.com/user/"+parent.author.name, resubmit=True)
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "spam", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "spam", parent.permalink)
                     
                 if comment.body == "!remove":
                     parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     
                     parent.remove()
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "remove", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "remove", parent.permalink)
                     
                 if comment.body == "!approve":
                     parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     
                     parent.approve()
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "remove", comment.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "remove", parent.permalink)
                     
                 if "!report" in comment.body:
                     parent = r.get_info(thing_id=comment.parent_id)
@@ -162,6 +162,8 @@ class Bot(object):
                     elif parent.fullname.startswith('t1_'):
                         msg = "Your comment has been removed from /r/"+comment.subreddit.display_name+"."+msg
                         parent.reply(msg).distinguish()
+                    
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "remove and warn", parent.permalink)
                     
                     
             except praw.errors.ModeratorOrScopeRequired:
