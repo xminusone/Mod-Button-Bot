@@ -146,11 +146,10 @@ class Bot(object):
                     comment.remove()
                     parent.remove()
                     
-                    rule = re.search("!rule ?(\d{1,2})?",comment.body).group(1)
-                    
-                    if rule=='':
+                    if re.match("!rule \d{1,2}",comment.body) is None':
                         msg="\n\nPlease see the [sidebar](/r/"+comment.subreddit.display_name+"/about/sidebar) for acceptable posting guidelines."
                     else:
+                        rule = re.search("!rule ?(\d{1,2})?",comment.body).group(1)
                         msg="\n\nPlease see Rule "+rule+" in the [sidebar](/r/"+comment.subreddit.display_name+"/about/sidebar)."
                         
                     msg=msg+"\n\nPlease [message the subreddit moderators](http://www.reddit.com/message/compose?to=%2Fr%2F"+comment.subreddit.display_name+") if you have any questions or concerns."
