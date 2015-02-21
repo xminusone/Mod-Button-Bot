@@ -154,7 +154,7 @@ class Bot(object):
                         msg="\n\nPlease see Rule "+rule+" in the [sidebar](/r/"+comment.subreddit.display_name+"/about/sidebar)."
                         
                     msg=msg+"/n/nPlease [message the subreddit moderators](http://www.reddit.com/message/compose?to=%2Fr%2F"+comment.subreddit.display_name+") if you have any questions or concerns."
-                    msg=msg+"/n/n*[I am a bot](https://github.com/captainmeta4/Mod-Button-Bot), but this message was generated at the instruction of a human moderator.*"
+                    msg=msg+"\n\n*[I am a bot](https://github.com/captainmeta4/Mod-Button-Bot), but this message was generated at the instruction of a human moderator.*"
                     
                     if parent.fullname.startswith('t3_'):
                         msg = "Your submission has been removed from /r/"+comment.subreddit.display_name+"."+msg
