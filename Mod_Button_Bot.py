@@ -263,19 +263,19 @@ class Bot(object):
             r.send_message(subreddit, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
     
     def run(self):
-        modbot.login_bot()
+        self.login_bot()
     
-        modbot.load_caches()
+        self.load_caches()
     
         while 1:
             print("running cycle")
         
             #Once an hour, update mod list
             if time.localtime().tm_min==0 and time.localtime().tm_sec<29:
-                modbot.update_moderators()
+                self.update_moderators()
         
-            modbot.check_messages()
-            modbot.do_comments()
+            self.check_messages()
+            self.do_comments()
             print("sleeping..")
     
             #Run cycle on XX:XX:00 and XX:XX:30
