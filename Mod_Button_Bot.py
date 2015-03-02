@@ -112,7 +112,7 @@ class Bot(object):
                     ftext = re.search("!linkflair( class=(\w+))? (.+)",comment.body).group(3)
                     
                     parent.set_flair(flair_text=ftext,flair_css_class=fclass)
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "flair: "+str(ftext)+"/"+str(fclass), parent.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "linkflair: "+str(ftext)+"/"+str(fclass), parent.permalink)
 
                 if comment.body == "!contrib":
                     parent = r.get_info(thing_id=comment.parent_id)
