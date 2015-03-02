@@ -166,7 +166,7 @@ class Bot(object):
                     
                     
             except praw.errors.ModeratorOrScopeRequired:
-                msg=comment.permalink+"&context=3\n\nI do not have the all of the necessary permissions to execute the above command."
+                msg=comment.permalink+"?context=3\n\nI do not have the all of the necessary permissions to execute the above command."
                 msg=msg+"\n\nI need access, flair, posts, and wiki permissions for full functionality."
                 r.send_message(comment.subreddit, "Error", msg)
 
