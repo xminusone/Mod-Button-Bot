@@ -9,7 +9,7 @@ Note - There is no PRAW method for determining if a moderator has a given modera
 
 Commands are issued by being a moderator and making a comment in your subreddit.
 
-The bot refreshes its internal cache of moderators every hour at :00 , so if you add or remove mods, the bot will automaticlly adjust its behavior accordingly.
+The bot refreshes its internal cache of moderators every hour at :00 , so if you add or remove mods, the bot will automatically adjust its behavior accordingly.
 
 All functions automatically remove the moderator's command comment.
 
@@ -24,7 +24,7 @@ Command|Action
 !remove|Removes the content.
 !approve|Approves the content
 !report|Reports the content. Your name will be included in the report reason, along with any text following "!report" For example, "!report is this spam?" will produce a Moderator Report by the bot, with "yourname - is this spam?" as the report reason.
-!rule|Removes the content, and leaves a comment directing the user to the sidebar. A number may be added, to indicate a specific rule, for example, `!rule 5`.
+!rule|Removes the content, and leaves a comment directing the user to the sidebar. A number may be added, to indicate a specific rule, for example, `!rule 5` will result in the bot leaving a comment directing the user to look at Rule 5 in the sidebar.
 
 #Logging
 
