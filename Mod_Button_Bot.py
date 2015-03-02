@@ -205,7 +205,7 @@ class Bot(object):
 
         mods=[]
         for user in subreddit.get_moderators():
-            if user.name != "AutoModerator" and user.name !=username:     #ignore automod and self
+            if user.name !=username:     #ignore self
                 mods.append(user.name)
         self.modlist[subreddit.display_name]=mods
         print("moderators loaded for /r/"+subreddit.display_name)
@@ -266,28 +266,32 @@ class Bot(object):
             r.edit_wiki_page(subreddit, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
         except praw.errors.ModeratorOrScopeRequired:
             r.send_message(subreddit, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
+    
+    def run(self):
+        modbot.login_bot()
+    
+        modbot.load_caches()
+    
+        while 1:
+            print("running cycle")
+        
+            #Once an hour, update mod list
+            if time.localtime().tm_min==0 and time.localtime().tm_sec<29:
+                modbot.update_moderators()
+        
+            modbot.check_messages()
+            modbot.do_comments()
+            print("sleeping..")
+    
+            #Run cycle on XX:XX:00 and XX:XX:30
+            time.sleep(1)
+            while time.localtime().tm_sec != 0 and time.localtime().tm_sec != 30:
+                time.sleep(1)
+    
 
 #Master bot process
 if __name__=='__main__':    
     modbot = Bot()
     
-    modbot.login_bot()
-    
-    modbot.load_caches()
-    
-    while 1:
-        print("running cycle")
-        
-        #Once an hour, update mod list
-        if time.localtime().tm_min==0 and time.localtime().tm_sec<29:
-            modbot.update_moderators()
-        
-        modbot.check_messages()
-        modbot.do_comments()
-        print("sleeping..")
-    
-        #Run cycle on XX:XX:00 and XX:XX:30
-        time.sleep(1)
-        while time.localtime().tm_sec != 0 and time.localtime().tm_sec != 30:
-            time.sleep(1)
+    modbot.run()
     
