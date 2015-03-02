@@ -98,7 +98,7 @@ class Bot(object):
                     self.log_entry(comment.subreddit, comment.author, parent.author, "flair: "+str(ftext)+"/"+str(fclass), parent.permalink)
                 
                 if "!linkflair" in comment.body:
-                    parent = r.get_info(thing_id=comment.link_id) #'parent' object is submission, regardless of if 'comment' is top level
+                    parent = comment.submission #'parent' object is submission, regardless of if 'comment' is top level
                     comment.remove()
                     acted_this_cycle=True
                     
