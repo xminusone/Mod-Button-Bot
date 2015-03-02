@@ -241,6 +241,10 @@ class Bot(object):
         
         wikipage = "* "+entry + "\n"+ wikipage
         
+        #ugly hax to account fro &amp; and &gt;
+        wikipage=wikipage.replace('&amp;','&')
+        wikipage=wikipage.replace('&gt;','>')
+        
         try:
             r.edit_wiki_page(subreddit, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
         except praw.errors.ModeratorOrScopeRequired:
