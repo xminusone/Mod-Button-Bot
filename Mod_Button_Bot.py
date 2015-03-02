@@ -96,6 +96,23 @@ class Bot(object):
                     ftext = re.search("!flair( class=(\w+))? (.+)",comment.body).group(3)
                     r.set_flair(comment.subreddit,parent.author.name,flair_text=ftext,flair_css_class=fclass)
                     self.log_entry(comment.subreddit, comment.author, parent.author, "flair: "+str(ftext)+"/"+str(fclass), parent.permalink)
+                
+                if "!linkflair" in comment.body:
+                    parent = r.get_info(thing_id=comment.parent_id)
+                    comment.remove()
+                    acted_this_cycle=True
+                    
+                    #Check that parent item is a submission
+                    if not parent.fullname.startswith('t3_'):
+                        r.send_message(comment.author,"Error",comment.permalink+"\n\nThe parent item is not a submission.")
+                        continue
+                    
+                    #extract flair params
+                    fclass = re.search("!linkflair( class=(\w+))? (.+)",comment.body).group(2)
+                    ftext = re.search("!linkflair( class=(\w+))? (.+)",comment.body).group(3)
+                    
+                    parent.set_flair(flair_text=ftext,flair_css_class=fclass)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "flair: "+str(ftext)+"/"+str(fclass), parent.permalink)
 
                 if comment.body == "!contrib":
                     parent = r.get_info(thing_id=comment.parent_id)
