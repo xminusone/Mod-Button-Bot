@@ -71,7 +71,7 @@ class Bot(object):
 
             #enclose all mod actions in a big Try to protect against insufficient permissions
             try:
-                if comment.body == "!ban":
+                if comment.body == "!ban" and comment.author.name != "AutoModerator":
                     parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     
@@ -153,7 +153,7 @@ class Bot(object):
                     reason = re.search("!report ?(.*)",comment.body).group(1)
                     parent.report(reason=comment.author.name+" - "+reason)
                     
-                if "!rule" in comment.body:
+                if "!rule" in comment.body and comment.author.name != "AutoModerator":
                     parent = r.get_info(thing_id=comment.parent_id)
                     comment.remove()
                     parent.remove()
@@ -164,7 +164,7 @@ class Bot(object):
                         rule = re.search("!rule ?(\d{1,2})?",comment.body).group(1)
                         msg="\n\nPlease see Rule "+rule+" in the [sidebar](/r/"+comment.subreddit.display_name+"/about/sidebar)."
                         
-                    msg=msg+"\n\nPlease [message the subreddit moderators](http://www.reddit.com/message/compose?to=%2Fr%2F"+comment.subreddit.display_name+") if you have any questions or concerns."
+                    msg=msg+"\n\nPlease [message the subreddit moderators](http://www.reddit.com/message/compose?to=%2Fr%2F"+comment.subreddit.display_name+"&subject=Question&message="+parent.permalink+"%0A%0AI have a question about the removal of this item) if you have any questions or concerns."
                     msg=msg+"\n\n*[I am a bot](https://github.com/captainmeta4/Mod-Button-Bot), but this message was generated at the instruction of a human moderator.*"
                     
                     if parent.fullname.startswith('t3_'):
