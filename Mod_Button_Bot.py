@@ -9,8 +9,8 @@ from retrying import retry
 r=praw.Reddit(user_agent="Toolbox Button Bot alpha /u/captainmeta4")
 
 #set globals
-username = "Mod_Button_Bot"
-password = os.environ.get('password')
+o = OAuth2Util.OAuth2Util(r, print_log=True)
+o.refresh()
 
 caching_subreddit="Mod_Button_Bot_Log"
 
@@ -183,7 +183,7 @@ class Bot(object):
                 r.send_message(comment.subreddit, "Error", msg)
 
         if acted_this_cycle:
-            r.edit_wiki_page("mod_button_bot_log","comment_cache",str(self.cache))
+            r.edit_wiki_page("xmo_test","comment_cache",str(self.cache))
 
     @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)  
     def update_moderators(self):
@@ -193,7 +193,7 @@ class Bot(object):
         for subreddit in r.get_my_moderation():
             self.update_moderators_in_subreddit(subreddit)
 
-        r.edit_wiki_page("mod_button_bot_log","modlist_cache",str(self.modlist))
+        r.edit_wiki_page("xmo_test","modlist_cache",str(self.modlist))
     
     @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
     def update_moderators_in_subreddit(self, subreddit):
@@ -217,11 +217,11 @@ class Bot(object):
                 print("Accepted moderator invite for /r/"+message.subreddit.display_name)
                 self.update_moderators_in_subreddit(message.subreddit)       
                 #update cache
-                r.edit_wiki_page("mod_button_bot_log","modlist_cache",str(self.modlist))  
+                r.edit_wiki_page("xmo_test","modlist_cache",str(self.modlist))  
                 
                 #create logging wiki page
                 
-                r.edit_wiki_page(message.subreddit, "Mod_Button_Bot_Log", "The action log for /u/Mod_Button_Bot will appear here.")
+                r.edit_wiki_page(message.subreddit, "xmo_test", "The action log for /u/Mod_Button_Bot will appear here.")
                 
                 #send greeting
                 msg="Hello, moderators of /r/"+message.subreddit.display_name+"!\n\n"
@@ -229,14 +229,14 @@ class Bot(object):
                 msg=msg+"Please ensure that I have access, flair, posts, and wiki permissions for full functionality.\n\n"
                 msg=msg+"I will log my actions at /r/"+message.subreddit.display_name+"/wiki/Mod_Button_Bot_Log. For the sake of accountability, if I am unable to log an action, I will send you a modmail instead.\n\n"
                 msg=msg+"Please [click here](/r/"+message.subreddit.display_name+"/wiki/settings/Mod_Button_Bot_Log) and set the page to \"only mods may edit and view\".\n\n"
-                msg=msg+"Feedback may be directed to my creator, /u/captainmeta4. Thanks for using me!"
+                #msg=msg+"Feedback may be directed to my creator, /u/captainmeta4. Thanks for using me!"
                 r.send_message(message.subreddit,"Hello!",msg)
                 
             except:
                 pass
             
             try:
-                if message.author.name=="captainmeta4" and "reload mods" in message.body:
+                if message.author.name=="x_minus_one" and "reload mods" in message.body:
                     self.update_moderators()
             except:
                 pass
