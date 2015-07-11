@@ -9,10 +9,10 @@ from retrying import retry
 r=praw.Reddit(user_agent="Toolbox Button Bot alpha /u/captainmeta4")
 
 #set globals
-o = OAuth2Util.OAuth2Util(r, print_log=True)
-o.refresh()
+username = "NotTheOnionBot"
+password = "Nice Try"
 
-caching_subreddit="Mod_Button_Bot_Log"
+caching_subreddit="xmo_test"
 
 
 
@@ -221,7 +221,7 @@ class Bot(object):
                 
                 #create logging wiki page
                 
-                r.edit_wiki_page(message.subreddit, "xmo_test", "The action log for /u/Mod_Button_Bot will appear here.")
+                r.edit_wiki_page(message.subreddit, "xmo_test", "The action log for /u/NotTheOnionBot's mod button module will appear here.")
                 
                 #send greeting
                 msg="Hello, moderators of /r/"+message.subreddit.display_name+"!\n\n"
@@ -229,7 +229,7 @@ class Bot(object):
                 msg=msg+"Please ensure that I have access, flair, posts, and wiki permissions for full functionality.\n\n"
                 msg=msg+"I will log my actions at /r/"+message.subreddit.display_name+"/wiki/Mod_Button_Bot_Log. For the sake of accountability, if I am unable to log an action, I will send you a modmail instead.\n\n"
                 msg=msg+"Please [click here](/r/"+message.subreddit.display_name+"/wiki/settings/Mod_Button_Bot_Log) and set the page to \"only mods may edit and view\".\n\n"
-                #msg=msg+"Feedback may be directed to my creator, /u/captainmeta4. Thanks for using me!"
+                msg=msg+"Thanks for using me!"
                 r.send_message(message.subreddit,"Hello!",msg)
                 
             except:
@@ -260,7 +260,7 @@ class Bot(object):
         try:
             r.edit_wiki_page(subreddit, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
         except praw.errors.ModeratorOrScopeRequired:
-            r.send_message(subreddit, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
+            r.send_message(xmo_test, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
     
     def run(self):
         self.login_bot()
