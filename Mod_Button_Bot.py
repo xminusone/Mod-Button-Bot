@@ -16,7 +16,9 @@ print(' ')
 username = "NotTheOnionBot"
 password = "Nice Try"
 
+# In my case, these are the same, but could be changed if we wanted to log in a different subreddit.
 caching_subreddit="xmo_test"
+logging_subreddit="xmo_test"
 
 class Bot(object):
     
@@ -220,12 +222,12 @@ class Bot(object):
                     
                     
             except praw.errors.ModeratorOrScopeRequired:
-                msg=comment.permalink+"?context=3\n\nI do not have the all of the necessary permissions to execute the above command."
+                msg=comment.permalink+"?context=3\n\nI didn't have the all of the necessary permissions to execute the above command."
                 msg=msg+"\n\nI need access, flair, posts, and wiki permissions for full functionality."
-                r.send_message(xmo_test, "Error", msg)
+                r.send_message(logging_subreddit, "NTOBot Error Report", msg)
 
         if acted_this_cycle:
-            r.edit_wiki_page("xmo_test","comment_cache",str(self.cache))
+            r.edit_wiki_page(caching_subreddit,"comment_cache",str(self.cache))
 
     @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)  
     def update_moderators(self):
@@ -235,7 +237,7 @@ class Bot(object):
         for subreddit in r.get_my_moderation():
             self.update_moderators_in_subreddit(subreddit)
 
-        r.edit_wiki_page("xmo_test","modlist_cache",str(self.modlist))
+        r.edit_wiki_page(caching_subreddit,"modlist_cache",str(self.modlist))
     
     @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
     def update_moderators_in_subreddit(self, subreddit):
@@ -264,7 +266,7 @@ class Bot(object):
                 
                 #create logging wiki page
                 
-                r.edit_wiki_page(message.subreddit, "xmo_test", "The action log for /u/NotTheOnionBot's mod button module will appear here.")
+                #r.edit_wiki_page(message.subreddit, "xmo_test", "The action log for /u/NotTheOnionBot's mod button module will appear here.")
                 
                 #send greeting
                 #msg="Hello, moderators of /r/"+message.subreddit.display_name+"!\n\n"
@@ -291,7 +293,7 @@ class Bot(object):
         entry = "["+entry+"]("+url+"&context=3)"
         print(entry+" in /r/"+subreddit.display_name)
         try:
-            wikipage = r.get_wiki_page(xmo_test, "Mod_Button_Bot_Log").content_md
+            wikipage = r.get_wiki_page(logging_subreddit, "Mod_Button_Bot_Log").content_md
         except:
             wikipage = ''
         
@@ -302,9 +304,9 @@ class Bot(object):
         wikipage=wikipage.replace('&gt;','>')
         
         try:
-            r.edit_wiki_page(xmo_test, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
+            r.edit_wiki_page(logging_subreddit, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
         except praw.errors.ModeratorOrScopeRequired:
-            r.send_message(xmo_test, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
+            r.send_message(logging_subreddit, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
     
     def run(self):
         self.login_bot()
@@ -320,7 +322,7 @@ class Bot(object):
         
             self.check_messages()
             self.do_comments()
-            print("sleeping..")
+            print("sleeping...")
     
             #Run cycle on XX:XX:00 and XX:XX:30
             time.sleep(1)
