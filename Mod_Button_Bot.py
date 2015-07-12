@@ -306,7 +306,7 @@ class Bot(object):
         try:
             r.edit_wiki_page(logging_subreddit, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
         except praw.errors.ModeratorOrScopeRequired:
-            r.send_message(logging_subreddit, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
+            r.send_message(logging_subreddit, "Log Wiki Write Failed", "I just tried to log the following action, but the write to the wiki page failed:\n\n *"+entry)
     
     def run(self):
         self.login_bot()
