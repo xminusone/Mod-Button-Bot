@@ -6,15 +6,17 @@ import os
 from retrying import retry
 
 #initialize reddit
-r=praw.Reddit(user_agent="Toolbox Button Bot alpha /u/captainmeta4")
+r=praw.Reddit(user_agent="Toolbox Button B0t alpha /u/captainmeta4, forked by /u/x_minus_one")
+print('/u/NotTheOnionBot Moderator Functions')
+print('Version 1.0 Beta')
+print('Reticulating splines...')
+print(' ')
 
 #set globals
 username = "NotTheOnionBot"
 password = "Nice Try"
 
 caching_subreddit="xmo_test"
-
-
 
 class Bot(object):
     
@@ -43,7 +45,7 @@ class Bot(object):
     def login_bot(self):
 
         print("logging in...")
-        r.login(username, password)
+        r.login(username, password, disable_warning=True)
         print("success")
     
     @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
@@ -71,20 +73,60 @@ class Bot(object):
 
             #enclose all mod actions in a big Try to protect against insufficient permissions
             try:
-                if comment.body == "!ban" and comment.author.name != "AutoModerator":
-                    parent = r.get_info(thing_id=comment.parent_id)
+                if comment.body == "!misleading" and comment.author.name != "AutoModerator":
+                    parent = comment.submission
                     comment.remove()
+                    acted_this_cycle=True
                     
-                    parent.remove()
-                    comment.subreddit.add_ban(parent_comment.author)
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "ban", parent.permalink)
+                    #does flair stuff
+                    mtClass = 'warning'
+                    mtText = 'misleading title'
+                    parent.set_flair(flair_text=mtText,flair_css_class=mtClass)
 
-                if comment.body == "!unban":
-                    parent = r.get_info(thing_id=comment.parent_id)
-                    comment.remove()
+                    #does comment stuff
+                    msg="Attention, citizens of /r/NotTheOnion!."
+                    msg=msg+"\n\nThis submission has been marked by the moderators as having a misleading title.  You may want to review the linked article for more details.  Some of the top comments for this submission may also explain why the title is misleading."
+                    msg=msg+"\n\n*[I am a bot](https://github.com/xminusone/Mod-Button-Bot), but this message was requested by the moderators of this subreddit.*"
+                    parent.add_comment(msg).distinguish()
                     
-                    comment.subreddit.remove_ban(parent.author)
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "unban", parent.permalink)
+                    #log entry
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "misleading: "+str(ftext)+"/"+str(fclass), parent.permalink)
+
+
+                if comment.body == "!lockthread" and comment.author.name != "AutoModerator":
+                    parent = comment.submission
+                    comment.remove()
+                    acted_this_cycle=True
+                    
+                    #does flair stuff
+                    ltClass = 'locked'
+                    ltText = 'comments closed'
+                    parent.set_flair(flair_text=ltText,flair_css_class=ltClass)
+
+                    #does comment stuff
+                    msg="Attention, citizens of /r/NotTheOnion!"
+                    msg=msg+"\n\n The comments section of this submission has been closed by the moderators.  Remember that abusive comments (including comments containing racism, homophobia, etc.), and the posting of public or private contact information are not permitted in /r/NotTheOnion."
+                    msg=msg+"\n\n*[I am a bot](https://github.com/xminusone/Mod-Button-Bot), but this message was requested by the moderators of this subreddit.*"
+                    parent.add_comment(msg).distinguish()
+                    
+                    #log entry
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "locked comments: "+str(ftext)+"/"+str(fclass), parent.permalink)
+
+
+                #if comment.body == "!ban" and comment.author.name != "AutoModerator":
+                    #parent = r.get_info(thing_id=comment.parent_id)
+                    #comment.remove()
+                    
+                    #parent.remove()
+                    #comment.subreddit.add_ban(parent.author)
+                    #self.log_entry(comment.subreddit, comment.author, parent.author, "ban", parent.permalink)
+
+                #if comment.body == "!unban":
+                    #parent = r.get_info(thing_id=comment.parent_id)
+                    #comment.remove()
+                    
+                    #comment.subreddit.remove_ban(parent.author)
+                    #self.log_entry(comment.subreddit, comment.author, parent.author, "unban", parent.permalink)
 
                 if "!flair" in comment.body:
                     parent = r.get_info(thing_id=comment.parent_id)
@@ -109,19 +151,19 @@ class Bot(object):
                     parent.set_flair(flair_text=ftext,flair_css_class=fclass)
                     self.log_entry(comment.subreddit, comment.author, parent.author, "linkflair: "+str(ftext)+"/"+str(fclass), parent.permalink)
 
-                if comment.body == "!contrib":
-                    parent = r.get_info(thing_id=comment.parent_id)
-                    comment.remove()
+                #if comment.body == "!contrib":
+                    #parent = r.get_info(thing_id=comment.parent_id)
+                    #comment.remove()
                     
-                    comment.subreddit.add_contributor(parent.author)
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "approve", parent.permalink)
+                    #comment.subreddit.add_contributor(parent.author)
+                    #self.log_entry(comment.subreddit, comment.author, parent.author, "approve", parent.permalink)
 
-                if comment.body == "!decontrib":
-                    parent = r.get_info(thing_id=comment.parent_id)
-                    comment.remove()
+                #if comment.body == "!decontrib":
+                    #parent = r.get_info(thing_id=comment.parent_id)
+                    #comment.remove()
                     
-                    comment.subreddit.remove_contributor(parent.author)
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "unapprove", parent.permalink)
+                    #comment.subreddit.remove_contributor(parent.author)
+                    #self.log_entry(comment.subreddit, comment.author, parent.author, "unapprove", parent.permalink)
                 
                 if comment.body == "!spam":
                     parent = r.get_info(thing_id=comment.parent_id)
@@ -143,7 +185,7 @@ class Bot(object):
                     comment.remove()
                     
                     parent.approve()
-                    self.log_entry(comment.subreddit, comment.author, parent.author, "remove", parent.permalink)
+                    self.log_entry(comment.subreddit, comment.author, parent.author, "approve", parent.permalink)
                     
                 if "!report" in comment.body:
                     parent = r.get_info(thing_id=comment.parent_id)
@@ -165,7 +207,7 @@ class Bot(object):
                         msg="\n\nPlease see Rule "+rule+" in the [sidebar](/r/"+comment.subreddit.display_name+"/about/sidebar)."
                         
                     msg=msg+"\n\nPlease [message the subreddit moderators](http://www.reddit.com/message/compose?to=%2Fr%2F"+comment.subreddit.display_name+"&subject=Question&message="+parent.permalink+"%0A%0AI have a question about the removal of this item) if you have any questions or concerns."
-                    msg=msg+"\n\n*[I am a bot](https://github.com/captainmeta4/Mod-Button-Bot), but this message was generated at the instruction of a human moderator.*"
+                    msg=msg+"\n\n*[I am a bot](https://github.com/xminusone/Mod-Button-Bot), but this message was generated at the instruction of a moderator of this subreddit.*"
                     
                     if parent.fullname.startswith('t3_'):
                         msg = "Your submission has been removed from /r/"+comment.subreddit.display_name+"."+msg
@@ -180,7 +222,7 @@ class Bot(object):
             except praw.errors.ModeratorOrScopeRequired:
                 msg=comment.permalink+"?context=3\n\nI do not have the all of the necessary permissions to execute the above command."
                 msg=msg+"\n\nI need access, flair, posts, and wiki permissions for full functionality."
-                r.send_message(comment.subreddit, "Error", msg)
+                r.send_message(xmo_test, "Error", msg)
 
         if acted_this_cycle:
             r.edit_wiki_page("xmo_test","comment_cache",str(self.cache))
@@ -213,30 +255,32 @@ class Bot(object):
             message.mark_as_read()
             #Just assume all messages are a mod invite, and fetch modlist if invite accepted
             try:
-                r.accept_moderator_invite(message.subreddit.display_name)
-                print("Accepted moderator invite for /r/"+message.subreddit.display_name)
-                self.update_moderators_in_subreddit(message.subreddit)       
+                pass
+                #r.accept_moderator_invite(message.subreddit.display_name)
+                #print("Accepted moderator invite for /r/"+message.subreddit.display_name)
+                #self.update_moderators_in_subreddit(message.subreddit)       
                 #update cache
-                r.edit_wiki_page("xmo_test","modlist_cache",str(self.modlist))  
+                #r.edit_wiki_page("xmo_test","modlist_cache",str(self.modlist))  
                 
                 #create logging wiki page
                 
                 r.edit_wiki_page(message.subreddit, "xmo_test", "The action log for /u/NotTheOnionBot's mod button module will appear here.")
                 
                 #send greeting
-                msg="Hello, moderators of /r/"+message.subreddit.display_name+"!\n\n"
-                msg=msg+"I am a bot designed to assist moderators using tablets, mobile devices, or any other reddit interface that does not support/permit extensions. Full details of my functionality may be found on [Github](http://github.com/captainmeta4/mod-button-bot).\n\n"
-                msg=msg+"Please ensure that I have access, flair, posts, and wiki permissions for full functionality.\n\n"
-                msg=msg+"I will log my actions at /r/"+message.subreddit.display_name+"/wiki/Mod_Button_Bot_Log. For the sake of accountability, if I am unable to log an action, I will send you a modmail instead.\n\n"
-                msg=msg+"Please [click here](/r/"+message.subreddit.display_name+"/wiki/settings/Mod_Button_Bot_Log) and set the page to \"only mods may edit and view\".\n\n"
-                msg=msg+"Thanks for using me!"
-                r.send_message(message.subreddit,"Hello!",msg)
+                #msg="Hello, moderators of /r/"+message.subreddit.display_name+"!\n\n"
+                #msg=msg+"I am a bot designed to assist moderators using tablets, mobile devices, or any other reddit interface that does not support/permit extensions. Full details of my functionality may be found on [Github](http://github.com/captainmeta4/mod-button-bot).\n\n"
+                #msg=msg+"Please ensure that I have access, flair, posts, and wiki permissions for full functionality.\n\n"
+                #msg=msg+"I will log my actions at /r/"+message.subreddit.display_name+"/wiki/Mod_Button_Bot_Log. For the sake of accountability, if I am unable to log an action, I will send you a modmail instead.\n\n"
+                #msg=msg+"Please [click here](/r/"+message.subreddit.display_name+"/wiki/settings/Mod_Button_Bot_Log) and set the page to \"only mods may edit and view\".\n\n"
+                #msg=msg+"Thanks for using me!"
+                #r.send_message(message.subreddit,"Hello!",msg)
                 
             except:
                 pass
             
             try:
                 if message.author.name=="x_minus_one" and "reload mods" in message.body:
+                    print('x_minus_one requested a modlist update, updating now.')
                     self.update_moderators()
             except:
                 pass
@@ -247,7 +291,7 @@ class Bot(object):
         entry = "["+entry+"]("+url+"&context=3)"
         print(entry+" in /r/"+subreddit.display_name)
         try:
-            wikipage = r.get_wiki_page(subreddit, "Mod_Button_Bot_Log").content_md
+            wikipage = r.get_wiki_page(xmo_test, "Mod_Button_Bot_Log").content_md
         except:
             wikipage = ''
         
@@ -258,7 +302,7 @@ class Bot(object):
         wikipage=wikipage.replace('&gt;','>')
         
         try:
-            r.edit_wiki_page(subreddit, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
+            r.edit_wiki_page(xmo_test, "Mod_Button_Bot_Log", wikipage,reason="action by "+modditor.name)
         except praw.errors.ModeratorOrScopeRequired:
             r.send_message(xmo_test, "Moderator Action", "I just tried to log the following action, but I do not have wiki permissions:\n\n *"+entry)
     
@@ -290,3 +334,4 @@ if __name__=='__main__':
     
     modbot.run()
     
+
