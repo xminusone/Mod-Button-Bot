@@ -4,6 +4,7 @@ from collections import deque
 import re
 import os
 from retrying import retry
+import sys
 
 #initialize reddit
 r=praw.Reddit(user_agent="Toolbox Button B0t alpha /u/captainmeta4, forked by /u/x_minus_one")
@@ -19,6 +20,7 @@ password = "Nice Try"
 # In my case, these are the same, but could be changed if we wanted to log in a different subreddit.
 caching_subreddit="xmo_test"
 logging_subreddit="xmo_test"
+admin_user="x_minus_one" # This user can send special PM commands to the bot
 
 class Bot(object):
     
@@ -281,9 +283,19 @@ class Bot(object):
                 pass
             
             try:
-                if message.author.name=="x_minus_one" and "reload mods" in message.body:
-                    print('x_minus_one requested a modlist update, updating now.')
+                if message.author.name==admin_user and "reload mods" in message.body:
+                    print('admin user requested a modlist update, updating now.')
+                    r.send_message(admin_user, "Command Accepted", "Command processed successfully. Reloading mods.")
+                    print('Sent confirmation to admin user.')
                     self.update_moderators()
+            except:
+                pass
+            try:
+                if message.author.name==admin_user and "shutdown" in message.body:
+                    print('admin user requested a script shutdown, exiting now.')
+                    r.send_message(admin_user, "Command Accepted", "Command processed successfully. Shutting down bot.")
+                    print('Sent confirmation to admin user.')
+                    sys.exit(0)
             except:
                 pass
             
